@@ -42,16 +42,16 @@ public class Clientes_Hibernate implements Cliente_dao {
 	}
 
 	@Override
-	public Boolean Update(int id,int opcion) {
+	public Boolean Update(int id, int opcion) {
 		Session sesion = fabrica.openSession();
 		Cliente cliente = sesion.get(Cliente.class, id);
-		
+
 		if (cliente != null) {
 			System.out.println("Cliente antes:\n" + cliente);
 			switch (opcion) {
 			case 1: {
-				//Nombre
-				
+				// Nombre
+
 				System.out.println("Nuevo Nombre");
 				String Nombre = Usuario.leerString();
 				cliente.setNombre(Nombre);
@@ -59,25 +59,15 @@ public class Clientes_Hibernate implements Cliente_dao {
 				sesion.merge(cliente);
 				tx.commit();
 				sesion.close();
-				
+
 			}
-			
-			case 2 :{
-				
+
+			case 2: {
+
 			}
 			default:
 				System.out.println("Opcion no Elegida");
 			}
-			try {
-				tx = sesion.beginTransaction();  // OJO, DESPUÉS DE HABER HECHO UN COMMIT O ROLLBACK INICIAMOS TRANSACCIÓN DE NUEVO
-				sesion.merge(l3);
-				tx.commit();
-				System.out.println("Libro después:\n" + l3);
-			
-		
-		else {
-			System.out.println("El libro con id=3 no existe");
-			return false;
 		}
 	}
 
