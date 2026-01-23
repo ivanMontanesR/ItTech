@@ -75,4 +75,10 @@ public class Cliente implements java.io.Serializable {
 		this.inscripcioneses = inscripcioneses;
 	}
 
+	@Override
+	public String toString() {
+	    return "Cliente #" + idCliente + " - " + nombre + " " + apellidos + 
+	           " | Dirección: " + direccion + " | Edad: " + edad + " años";
+	}
+
 }

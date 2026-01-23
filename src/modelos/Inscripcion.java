@@ -9,19 +9,19 @@ import java.sql.Date;
 public class Inscripcion implements java.io.Serializable {
 
 	private Integer idInscripcion;
-	private Cursos cursos;
+	private Curso cursos;
 	private Cliente clientes;
 	private Date fechaInscripcion;
 
 	public Inscripcion() {
 	}
 
-	public Inscripcion(Cursos cursos, Cliente clientes) {
+	public Inscripcion(Curso cursos, Cliente clientes) {
 		this.cursos = cursos;
 		this.clientes = clientes;
 	}
 
-	public Inscripcion(Cursos cursos, Cliente clientes, Date fechaInscripcion) {
+	public Inscripcion(Curso cursos, Cliente clientes, Date fechaInscripcion) {
 		this.cursos = cursos;
 		this.clientes = clientes;
 		this.fechaInscripcion = fechaInscripcion;
@@ -35,11 +35,11 @@ public class Inscripcion implements java.io.Serializable {
 		this.idInscripcion = idInscripcion;
 	}
 
-	public Cursos getCursos() {
+	public Curso getCursos() {
 		return this.cursos;
 	}
 
-	public void setCursos(Cursos cursos) {
+	public void setCursos(Curso cursos) {
 		this.cursos = cursos;
 	}
 
@@ -57,6 +57,15 @@ public class Inscripcion implements java.io.Serializable {
 
 	public void setFechaInscripcion(Date fechaInscripcion) {
 		this.fechaInscripcion = fechaInscripcion;
+	}
+
+	@Override
+	public String toString() {
+		String nombreCliente = clientes.getNombre() ;
+		String nombreCurso =cursos.getNombreCurso();
+
+		return "Inscripción #" + idInscripcion + " | Cliente: " + nombreCliente + " | Curso: " + nombreCurso
+				+ " | Fecha: " + fechaInscripcion;
 	}
 
 }

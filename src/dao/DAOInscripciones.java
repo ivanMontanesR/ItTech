@@ -3,7 +3,7 @@ package dao;
 import java.util.List;
 import modelos.Inscripcion;
 
-public interface Inscripciones_dao {
+public interface DAOInscripciones {
 	public List<Inscripcion> getAll();
     public Boolean Create(Inscripcion Ic);
     public Inscripcion getOne(int id);

@@ -3,7 +3,7 @@
 import org.neodatis.odb.ODB;
 import org.neodatis.odb.ODBFactory;
 import modelos.Cliente;
-import modelos.Cursos;
+import modelos.Curso;
 import modelos.Inscripcion;
 
 import javax.xml.parsers.*;
@@ -71,7 +71,7 @@ public class GeneraBDOO {
                     }
                     
                     // ✅ Usar constructor vacío y setters (NO tocar el Set)
-                    Cursos curso = new Cursos();
+                    Curso curso = new Curso();
                     curso.setIdCurso(idCurso);
                     curso.setNombreCurso(nombreCurso);
                     curso.setDescripcion(descripcion);
@@ -183,7 +183,7 @@ public class GeneraBDOO {
                     Cliente clienteRef = new Cliente();
                     clienteRef.setIdCliente(idCliente);
                     
-                    Cursos cursoRef = new Cursos();
+                    Curso cursoRef = new Curso();
                     cursoRef.setIdCurso(idCurso);
                     
                     // ✅ Crear inscripción usando el constructor con parámetros

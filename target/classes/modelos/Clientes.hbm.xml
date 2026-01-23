@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generated 15 ene 2026, 18:39:43 by Hibernate Tools 6.5.1.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class catalog="ITtech" name="datos.Clientes" optimistic-lock="none" table="clientes">
+    <class catalog="ITtech" name="modelos.Cliente" optimistic-lock="none" table="clientes">
         <id name="idCliente" type="java.lang.Integer">
             <column name="id_cliente"/>
             <generator class="identity"/>
@@ -22,7 +22,7 @@
             <key>
                 <column name="id_cliente" not-null="true"/>
             </key>
-            <one-to-many class="datos.Inscripciones"/>
+            <one-to-many class="modelos.Inscripcion"/>
         </set>
     </class>
 </hibernate-mapping>

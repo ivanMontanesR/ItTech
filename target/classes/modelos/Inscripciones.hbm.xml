@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Generated 15 ene 2026, 18:39:43 by Hibernate Tools 6.5.1.Final --><!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-    <class catalog="ITtech" name="datos.Inscripciones" optimistic-lock="none" table="inscripciones">
+    <class catalog="ITtech" name="modelos.Inscripcion" optimistic-lock="none" table="inscripciones">
         <id name="idInscripcion" type="java.lang.Integer">
             <column name="id_inscripcion"/>
             <generator class="identity"/>
         </id>
-        <many-to-one class="datos.Cursos" fetch="select" name="cursos">
+        <many-to-one class="modelos.Cursos" fetch="select" name="cursos">
             <column name="id_curso" not-null="true"/>
         </many-to-one>
-        <many-to-one class="datos.Clientes" fetch="select" name="clientes">
+        <many-to-one class="modelos.Cliente" fetch="select" name="clientes">
             <column name="id_cliente" not-null="true"/>
         </many-to-one>
         <property name="fechaInscripcion" type="date">
