@@ -8,6 +8,6 @@ public interface DAOCursos {
 	public List<Curso> getAll();
     public Boolean Create(Curso cl);
     public Curso getOne(int id);
-    public Boolean Update(int id,int opcion);
+    public Boolean Update(Curso cur);
     public Boolean Borrar(int id);
 }

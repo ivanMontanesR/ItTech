@@ -1,29 +1,27 @@
 package controlador;
 
-import dao.DAOCursos;
 import dao.DAOInscripciones;
-import dao.DAOcliente;
-import dao.impl.Clientes_Hibernate;
-import dao.impl.Cursos_Hibernate;
+
+import dao.impl.Inscripciones_Hibernate;
+import dao.impl.Inscripciones_Neodatis;
 
 public class InscripcionesControlador {
 
-	private int tipoBD; 
+	private int tipoBD;
 
 	public InscripcionesControlador(int tipoBD) {
 		this.tipoBD = tipoBD;
 	}
 
-	public DAOInscripciones getInscripcionesDAO() {
+	public DAOInscripciones getInscripcionDAO() {
 		switch (tipoBD) {
 		case 1:
 			return new Inscripciones_Hibernate();
 		case 2:
-			
-			return new Cursos_Neodatis();
+
+			return new Inscripciones_Neodatis();
 		case 3:
-			return new Cursos_ExistDB();
-			
+
 		default:
 			System.err.println("Tipo de BD no válido");
 			return null;

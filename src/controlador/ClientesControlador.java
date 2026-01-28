@@ -1,12 +1,14 @@
 package controlador;
 
 import dao.DAOcliente;
+import dao.impl.Clientes_ExistDB;
 import dao.impl.Clientes_Hibernate;
-import dao.impl.Cursos_Hibernate;
+import dao.impl.Clientes_Neodatis;
+
 
 public class ClientesControlador {
 
-	private int tipoBD; // 1=MySQL, 2=Neodatis, 3=eXist-DB
+	private int tipoBD; 
 
 	public ClientesControlador(int tipoBD) {
 		this.tipoBD = tipoBD;

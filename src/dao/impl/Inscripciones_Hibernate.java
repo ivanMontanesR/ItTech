@@ -1,53 +1,55 @@
 package dao.impl;
 
+
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import dao.DAOcliente;
+
+import dao.DAOInscripciones;
 import jakarta.persistence.EntityExistsException;
-import modelos.Cliente;
+
+import modelos.Inscripcion;
 import util.HibernateUtil;
 
 
-public class Clientes_Hibernate implements DAOcliente {
+public class Inscripciones_Hibernate implements DAOInscripciones {
 
 	private static final SessionFactory fabrica = HibernateUtil.getSessionFactory();
 
 	@Override
-	public List<Cliente> getAll() {
+	public List<Inscripcion> getAll() {
 		Session sesion = fabrica.openSession();
-		List<Cliente> clientes = null;
+		List<Inscripcion> inscripciones = null;
 		try {
-			clientes = sesion.createQuery("FROM Cliente", Cliente.class).list();
+			inscripciones = sesion.createQuery("FROM Inscripcion", Inscripcion.class).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			sesion.close();
 		}
-		return clientes;
+		return inscripciones;
 	}
 
 	@Override
-	public Cliente getOne(int id) {
+	public Inscripcion getOne(int id) {
 		Session sesion = fabrica.openSession();
-		Cliente cliente = sesion.get(Cliente.class, id);
+		Inscripcion inscripcion = sesion.get(Inscripcion.class, id);
 		sesion.close();
-		return cliente;
+		return inscripcion;
 	}
 
 	@Override
-	public Boolean Update(Cliente cl) {
+	public Boolean Update(Inscripcion ins) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 
 		try {
-
 			tx = sesion.beginTransaction();
-			sesion.merge(cl);
+			sesion.merge(ins);
 			tx.commit();
 
-		
+			
 			return true;
 
 		} catch (Exception e) {
@@ -68,17 +70,16 @@ public class Clientes_Hibernate implements DAOcliente {
 		Transaction tx = null;
 
 		try {
+			Inscripcion ins = sesion.get(Inscripcion.class, id);
 
-			Cliente cl = sesion.get(Cliente.class, id);
-
-			if (cl == null) {
-				System.err.println("Cliente no encontrado");
+			if (ins == null) {
+				System.err.println("Inscripción no encontrada");
 				return false;
 			}
 
-			System.out.println("Voy a borrar:\n" + cl.toString());
+			System.out.println("Voy a borrar:\n" + ins.toString());
 			tx = sesion.beginTransaction();
-			sesion.remove(cl);
+			sesion.remove(ins);
 			tx.commit();
 			return true;
 
@@ -95,29 +96,28 @@ public class Clientes_Hibernate implements DAOcliente {
 	}
 
 	@Override
-	public Boolean Create(Cliente cl) {
+	public Boolean Create(Inscripcion inscripcion) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 
 		try {
 			tx = sesion.beginTransaction();
-			sesion.persist(cl);
+			sesion.persist(inscripcion);
 			tx.commit();
+
+			System.out.println("Inscripción creada con ID: " + inscripcion.getIdInscripcion());
 			return true;
 
 		} catch (EntityExistsException e1) {
-			System.err.println("El Cliente ya existe");
-			System.err.println(e1.getMessage());
+			System.err.println("La inscripción ya existe");
 			if (tx != null)
 				tx.rollback();
 			return false;
 
 		} catch (IllegalArgumentException e2) {
-			System.err.println("Error en el Cliente que se desea guardar");
-			System.err.println(e2.getMessage());
-			if (tx != null) {
+			System.err.println("Error en la inscripción: " + e2.getMessage());
+			if (tx != null)
 				tx.rollback();
-			}
 			return false;
 
 		} finally {

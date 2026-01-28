@@ -7,7 +7,7 @@ public interface DAOcliente {
     public List<Cliente> getAll();
     public Boolean Create(Cliente cl);
     public Cliente getOne(int id);
-    public Boolean Update(int id,int opcion);
+    public Boolean Update(Cliente cl);
     public Boolean Borrar(int id);
     
 }
