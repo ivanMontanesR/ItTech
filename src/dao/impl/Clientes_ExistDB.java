@@ -20,8 +20,8 @@ public class Clientes_ExistDB implements DAOcliente {
 
     private static final String URI = "xmldb:exist://192.168.56.102:8080/exist/xmlrpc/db/ITtech";
     private static final String DRIVER = "org.exist.xmldb.DatabaseImpl";
-    private static final String USER = "admin";
-    private static final String PASSWORD = "";
+    private static final String USER = "ivan";
+    private static final String PASSWORD = "openpgpwd";
 
     private Collection conectar() throws XMLDBException {
         try {

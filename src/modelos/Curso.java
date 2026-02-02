@@ -67,7 +67,7 @@ public class Curso implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-	    return "Curso #" + idCurso + " - " + nombreCurso + 
+	    return "Curso " + idCurso + " - " + nombreCurso + 
 	           " | " + descripcion + " | Duración: " + duracion + " horas";
 	}
 

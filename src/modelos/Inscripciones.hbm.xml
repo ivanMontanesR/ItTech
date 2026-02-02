@@ -6,10 +6,10 @@
             <column name="id_inscripcion"/>
             <generator class="identity"/>
         </id>
-        <many-to-one class="modelos.Curso" fetch="select" name="cursos">
+        <many-to-one class="modelos.Curso" fetch="join" name="cursos">
             <column name="id_curso" not-null="true"/>
         </many-to-one>
-        <many-to-one class="modelos.Cliente" fetch="select" name="clientes">
+        <many-to-one class="modelos.Cliente" fetch="join" name="clientes">
             <column name="id_cliente" not-null="true"/>
         </many-to-one>
         <property name="fechaInscripcion" type="date">

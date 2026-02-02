@@ -18,7 +18,7 @@ public class Cursos_Hibernate implements DAOCursos {
 		Session sesion = fabrica.openSession();
 		List<Curso> cursos = null;
 		try {
-			cursos = sesion.createQuery("FROM Cursos", Curso.class).list();
+			cursos = sesion.createQuery("FROM Curso", Curso.class).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

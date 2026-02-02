@@ -22,7 +22,7 @@ public class Inscripciones_Hibernate implements DAOInscripciones {
 		Session sesion = fabrica.openSession();
 		List<Inscripcion> inscripciones = null;
 		try {
-			inscripciones = sesion.createQuery("FROM Inscripcion", Inscripcion.class).list();
+			inscripciones = sesion.createQuery("FROM Inscripcion i JOIN FETCH i.clientes JOIN FETCH i.cursos", Inscripcion.class).list();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -34,8 +34,17 @@ public class Inscripciones_Hibernate implements DAOInscripciones {
 	@Override
 	public Inscripcion getOne(int id) {
 		Session sesion = fabrica.openSession();
-		Inscripcion inscripcion = sesion.get(Inscripcion.class, id);
-		sesion.close();
+		Inscripcion inscripcion = null;
+		try {
+			inscripcion = sesion.createQuery(
+				"FROM Inscripcion i JOIN FETCH i.clientes JOIN FETCH i.cursos WHERE i.idInscripcion = :id",
+				Inscripcion.class
+			).setParameter("id", id).uniqueResult();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sesion.close();
+		}
 		return inscripcion;
 	}
 

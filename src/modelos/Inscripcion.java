@@ -64,7 +64,7 @@ public class Inscripcion implements java.io.Serializable {
 		String nombreCliente = clientes.getNombre() ;
 		String nombreCurso =cursos.getNombreCurso();
 
-		return "Inscripción #" + idInscripcion + " | Cliente: " + nombreCliente + " | Curso: " + nombreCurso
+		return "Inscripción " + idInscripcion + " | Cliente: " + nombreCliente + " | Curso: " + nombreCurso
 				+ " | Fecha: " + fechaInscripcion;
 	}
 
