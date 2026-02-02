@@ -228,17 +228,21 @@ public class Clientes_ExistDB implements DAOcliente {
 
     private int obtenerUltimoId(Collection col) throws XMLDBException {
         XPathQueryService service = (XPathQueryService) col.getService("XPathQueryService", "1.0");
-        ResourceSet result = service.query("max(//cliente/id_cliente)");
+        
+        
+        String query = "max(doc('ITtech_table_clientes.xml')//id_cliente/xs:integer(.))";
+        ResourceSet result = service.query(query);
         
         if (result.getSize() > 0) {
-            String maxId = result.getResource(0).getContent().toString();
-            try {
-                return Integer.parseInt(maxId);
-            } catch (NumberFormatException e) {
-                return 0;
+            Resource res = result.getResource(0);
+            Object content = res.getContent();
+            
+            if (content != null && !content.toString().equals("")) {
+                // eXist-db puede devolver el número como String o Double
+                return (int) Double.parseDouble(content.toString());
             }
         }
-        return 0;
+        return 0; // Si no hay clientes, empezamos desde 0
     }
 
     private Cliente parseCliente(String xml) {

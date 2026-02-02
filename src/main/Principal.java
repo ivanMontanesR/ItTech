@@ -18,9 +18,9 @@ public class Principal {
 
 		System.out.println("   SISTEMA DE GESTION ITtech");
 		System.out.println("Seleccione la base de datos:");
-		System.out.println("1. MySQL (Hibernate)");
-		System.out.println("2. Neodatis (Objetos)");
-		System.out.println("3. eXist-DB (XML)");
+		System.out.println("1. MySQL ");
+		System.out.println("2. Neodatis ");
+		System.out.println("3. Exist-DB ");
 
 		int tipoBD = Usuario.leerEntero();
 
@@ -60,7 +60,7 @@ public class Principal {
 				DAOcliente clienteDAO = controlador.getClienteDAO();
 
 				if (clienteDAO == null) {
-					System.out.println("No se pudo crear el DAO");
+					System.out.println("No se pudo crear el dao");
 					break;
 				}
 
@@ -68,7 +68,7 @@ public class Principal {
 
 				do {
 
-					System.out.println("\n    GESTION DE CLIENTES");
+					System.out.println("\n    GESTION DE CLIENTES  ");
 					System.out.println("1) Consultar Todos los Clientes");
 					System.out.println("2) Consultar Un Cliente");
 					System.out.println("3) Crear un Cliente Nuevo");
@@ -237,7 +237,7 @@ public class Principal {
 
 				do {
 
-					System.out.println("\n    GESTION DE CURSOS");
+					System.out.println("\n    GESTION DE CURSOS   ");
 					System.out.println("1) Consultar Todos los Cursos");
 					System.out.println("2) Consultar Un Curso");
 					System.out.println("3) Crear un Curso Nuevo");
@@ -398,7 +398,7 @@ public class Principal {
 
 				do {
 
-					System.out.println("\n    GESTION DE INSCRIPCIONES");
+					System.out.println("\n    GESTION DE INSCRIPCIONES   ");
 					System.out.println("1) Consultar Todas las Inscripciones");
 					System.out.println("2) Consultar Una Inscripcion");
 					System.out.println("3) Crear una Inscripcion Nueva");
