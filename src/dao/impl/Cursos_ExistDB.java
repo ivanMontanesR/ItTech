@@ -121,7 +121,7 @@ public class Cursos_ExistDB implements DAOCursos {
             String xquery = "update replace doc('/db/ITtech/cursos.xml')//curso[id_curso=" + cur.getIdCurso() + "] with " + cursoXML;
             service.query(xquery);
 
-            System.out.println("Curso actualizado");
+           
             return true;
 
         } catch (XMLDBException e) {

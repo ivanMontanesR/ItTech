@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.neodatis.odb.ODB;
-import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.criteria.Where;
@@ -39,24 +38,34 @@ public class Cursos_Neodatis implements DAOCursos {
 		return cursos;
 	}
 
+	
 	@Override
 	public Boolean Create(Curso cur) {
-
-		try {
-
-			baseDatos.store(cur);
-			baseDatos.commit();
-
-			return true;
-
-		} catch (Exception e) {
-			System.err.println("Error al crear curso: " + e.getMessage());
-			e.printStackTrace();
-			if (baseDatos != null) {
-				baseDatos.rollback();
-			}
-			return false;
-		}
+	    try {
+	        IQuery consulta = new CriteriaQuery(Curso.class);
+	        Objects<Curso> resultado = baseDatos.getObjects(consulta);
+	        
+	        int maxId = 0;
+	        while (resultado.hasNext()) {
+	            Curso c = resultado.next();  
+	            if (c.getIdCurso() != null && c.getIdCurso() > maxId) {
+	                maxId = c.getIdCurso();
+	            }
+	        }
+	        
+	        cur.setIdCurso(maxId + 1);
+	        
+	        baseDatos.store(cur);
+	        baseDatos.commit();
+	        return true;
+	    } catch (Exception e) {
+	        System.err.println("Error al crear curso: " + e.getMessage());
+	        e.printStackTrace();
+	        if (baseDatos != null) {
+	            baseDatos.rollback();
+	        }
+	        return false;
+	    }
 	}
 
 	@Override

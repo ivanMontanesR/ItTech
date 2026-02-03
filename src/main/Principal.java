@@ -22,7 +22,7 @@ public class Principal {
 		System.out.println("2. Neodatis ");
 		System.out.println("3. Exist-DB ");
 
-		int tipoBD = Usuario.leerEntero();
+		int tipoBD = Usuario.leerEnteroPositivo();
 
 		String nombreBD = "";
 		switch (tipoBD) {
@@ -52,7 +52,7 @@ public class Principal {
 			System.out.println("3) Gestionar Inscripciones");
 			System.out.println("0) Salir");
 
-			opcion = Usuario.leerEntero();
+			opcion = Usuario.leerEnteroPositivo();
 
 			switch (opcion) {
 			case 1: {
@@ -76,7 +76,7 @@ public class Principal {
 					System.out.println("5) Borrar Un Cliente");
 					System.out.println("0) Volver");
 
-					opcionCliente = Usuario.leerEntero();
+					opcionCliente = Usuario.leerEnteroPositivo();
 
 					switch (opcionCliente) {
 					case 1: {
@@ -95,7 +95,7 @@ public class Principal {
 
 					case 2: {
 						System.out.println("ID del cliente:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Cliente cliente = clienteDAO.getOne(id);
 						if (cliente != null) {
@@ -114,18 +114,17 @@ public class Principal {
 						String apellidos = Usuario.leerString();
 
 						System.out.println("Direccion:");
-						String direccion = Usuario.leerString();
+						String direccion = Usuario.leerAlfanumericos();
 
 						System.out.println("Edad:");
-						Integer edad = Usuario.leerEntero();
+						Integer edad = Usuario.leerEnteroRango(0, 120);
 
-						Cliente nuevoCliente = new Cliente();
-						nuevoCliente.setNombre(nombre);
-						nuevoCliente.setApellidos(apellidos);
-						nuevoCliente.setDireccion(direccion);
-						nuevoCliente.setEdad(edad);
-
-						Boolean creado = clienteDAO.Create(nuevoCliente);
+						Cliente cl = new Cliente();
+						cl.setNombre(nombre);
+						cl.setApellidos(apellidos);
+						cl.setDireccion(direccion);
+						cl.setEdad(edad);
+						Boolean creado = clienteDAO.Create(cl);
 
 						if (creado) {
 							System.out.println("Cliente creado");
@@ -137,7 +136,7 @@ public class Principal {
 
 					case 4: {
 						System.out.println("ID del cliente:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 						Cliente cl = clienteDAO.getOne(id);
 						if (cl == null) {
 							System.err.println("Cliente no encontrado");
@@ -151,7 +150,7 @@ public class Principal {
 						System.out.println("4. Edad");
 						System.out.println("0. Cancelar");
 
-						int opcionUpdate = Usuario.leerEntero();
+						int opcionUpdate = Usuario.leerEnteroPositivo();
 
 						switch (opcionUpdate) {
 						case 1:
@@ -168,14 +167,16 @@ public class Principal {
 
 						case 3:
 							System.out.println("Nueva Direccion:");
-							String direccion = Usuario.leerString();
+							String direccion = Usuario.leerAlfanumericos();
 							cl.setDireccion(direccion);
 							break;
 
 						case 4:
 							System.out.println("Nueva Edad:");
-							Integer edad = Usuario.leerEntero();
+							Integer edad = Usuario.leerEnteroRango(0, 120);
+
 							cl.setEdad(edad);
+
 							break;
 
 						case 0:
@@ -199,7 +200,7 @@ public class Principal {
 
 					case 5: {
 						System.out.println("ID del cliente:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Boolean borrado = clienteDAO.Borrar(id);
 
@@ -245,7 +246,7 @@ public class Principal {
 					System.out.println("5) Borrar Un Curso");
 					System.out.println("0) Volver");
 
-					opcionCurso = Usuario.leerEntero();
+					opcionCurso = Usuario.leerEnteroPositivo();
 
 					switch (opcionCurso) {
 					case 1: {
@@ -264,7 +265,7 @@ public class Principal {
 
 					case 2: {
 						System.out.println("ID del curso:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Curso curso = cursoDAO.getOne(id);
 						if (curso != null) {
@@ -283,7 +284,7 @@ public class Principal {
 						String descripcion = Usuario.leerString();
 
 						System.out.println("Duracion (horas):");
-						Integer duracion = Usuario.leerEntero();
+						Integer duracion = Usuario.leerEnteroPositivo();
 
 						Curso nuevoCurso = new Curso();
 						nuevoCurso.setNombreCurso(nombre);
@@ -302,7 +303,7 @@ public class Principal {
 
 					case 4: {
 						System.out.println("ID del curso:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Curso curso = cursoDAO.getOne(id);
 						if (curso == null) {
@@ -317,7 +318,7 @@ public class Principal {
 						System.out.println("3. Duracion");
 						System.out.println("0. Cancelar");
 
-						int opcionUpdate = Usuario.leerEntero();
+						int opcionUpdate = Usuario.leerEnteroPositivo();
 
 						switch (opcionUpdate) {
 						case 1:
@@ -334,7 +335,7 @@ public class Principal {
 
 						case 3:
 							System.out.println("Nueva Duracion:");
-							int duracion = Usuario.leerEntero();
+							int duracion = Usuario.leerEnteroPositivo();
 							curso.setDuracion(duracion);
 							break;
 
@@ -359,7 +360,7 @@ public class Principal {
 
 					case 5: {
 						System.out.println("ID del curso:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Boolean borrado = cursoDAO.Borrar(id);
 
@@ -394,6 +395,11 @@ public class Principal {
 				CursosControlador controladorCur = new CursosControlador(tipoBD);
 				DAOCursos cursoDAO = controladorCur.getCursosDAO();
 
+				if (inscripcionDAO == null || clienteDAO == null || cursoDAO == null) {
+					System.out.println("No se pudo crear el DAO");
+					break;
+				}
+
 				int opcionInscripcion = 0;
 
 				do {
@@ -406,7 +412,7 @@ public class Principal {
 					System.out.println("5) Borrar Una Inscripcion");
 					System.out.println("0) Volver");
 
-					opcionInscripcion = Usuario.leerEntero();
+					opcionInscripcion = Usuario.leerEnteroPositivo();
 
 					switch (opcionInscripcion) {
 					case 1: {
@@ -425,7 +431,7 @@ public class Principal {
 
 					case 2: {
 						System.out.println("ID de la inscripcion:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Inscripcion inscripcion = inscripcionDAO.getOne(id);
 						if (inscripcion != null) {
@@ -438,13 +444,13 @@ public class Principal {
 
 					case 3: {
 						System.out.println("ID del Cliente:");
-						int idCliente = Usuario.leerEntero();
+						int idCliente = Usuario.leerEnteroPositivo();
 
 						System.out.println("ID del Curso:");
-						int idCurso = Usuario.leerEntero();
+						int idCurso = Usuario.leerEnteroPositivo();
 
 						System.out.println("Fecha de Inscripcion (YYYY-MM-DD):");
-						String fechaStr = Usuario.leerString();
+						Date fecha = Usuario.leerFechaSQL();
 
 						try {
 							Cliente cliente = clienteDAO.getOne(idCliente);
@@ -460,8 +466,6 @@ public class Principal {
 								System.err.println("Curso con ID " + idCurso + " no encontrado");
 								break;
 							}
-
-							Date fecha = Date.valueOf(fechaStr);
 
 							Inscripcion nuevaInscripcion = new Inscripcion(curso, cliente, fecha);
 
@@ -481,7 +485,7 @@ public class Principal {
 
 					case 4: {
 						System.out.println("ID de la inscripcion:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Inscripcion inscripcion = inscripcionDAO.getOne(id);
 						if (inscripcion == null) {
@@ -496,14 +500,14 @@ public class Principal {
 						System.out.println("3. Fecha de Inscripcion");
 						System.out.println("0. Cancelar");
 
-						int opcionUpdate = Usuario.leerEntero();
+						int opcionUpdate = Usuario.leerEnteroPositivo();
 
 						switch (opcionUpdate) {
 						case 1:
 							System.out.println("Nuevo ID de Cliente:");
-							int idCliente = Usuario.leerEntero();
+							int idCliente = Usuario.leerEnteroPositivo();
 							Cliente cliente = clienteDAO.getOne(idCliente);
-
+							
 							if (cliente == null) {
 								System.err.println("Cliente no encontrado");
 								break;
@@ -512,8 +516,8 @@ public class Principal {
 							break;
 
 						case 2:
-							System.out.println("Nuevo ID de Curso:");
-							int idCurso = Usuario.leerEntero();
+							System.out.println("Nuevo id de Curso:");
+							int idCurso = Usuario.leerEnteroPositivo();
 							Curso curso = cursoDAO.getOne(idCurso);
 
 							if (curso == null) {
@@ -525,14 +529,10 @@ public class Principal {
 
 						case 3:
 							System.out.println("Nueva Fecha (YYYY-MM-DD):");
-							String fechaStr = Usuario.leerString();
-							try {
-								Date fecha = Date.valueOf(fechaStr);
-								inscripcion.setFechaInscripcion(fecha);
-							} catch (IllegalArgumentException e) {
-								System.err.println("Formato de fecha invalido. Use YYYY-MM-DD");
-								break;
-							}
+							Date fecha = Usuario.leerFechaSQL();
+
+							inscripcion.setFechaInscripcion(fecha);
+
 							break;
 
 						case 0:
@@ -556,7 +556,7 @@ public class Principal {
 
 					case 5: {
 						System.out.println("ID de la inscripcion:");
-						int id = Usuario.leerEntero();
+						int id = Usuario.leerEnteroPositivo();
 
 						Boolean borrada = inscripcionDAO.Borrar(id);
 
@@ -590,7 +590,6 @@ public class Principal {
 			}
 
 		} while (opcion != 0);
-
-		
+		Usuario.cerrarScanner();
 	}
 }

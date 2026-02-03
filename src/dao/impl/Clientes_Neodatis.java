@@ -34,6 +34,18 @@ public class Clientes_Neodatis implements DAOcliente {
 	@Override
 	public Boolean Create(Cliente cl) {
 		try {
+			  IQuery consulta = new CriteriaQuery(Cliente.class);
+		        Objects<Cliente> resultado = baseDatos.getObjects(consulta);
+		        
+		        int maxId = 0;
+		        while (resultado.hasNext()) {
+		            Cliente c = resultado.next();
+		            if (c.getIdCliente() != null && c.getIdCliente() > maxId) {
+		                maxId = c.getIdCliente();
+		            }
+		        }
+		        
+		        cl.setIdCliente(maxId + 1);
 			baseDatos.store(cl);
 			baseDatos.commit();
 			return true;

@@ -122,7 +122,7 @@ public class Inscripciones_ExistDB implements DAOInscripciones {
             String xquery = "update replace doc('/db/ITtech/inscripciones.xml')//inscripcion[id_inscripcion=" + ins.getIdInscripcion() + "] with " + inscripcionXML;
             service.query(xquery);
 
-            System.out.println("Inscripcion actualizada");
+            
             return true;
 
         } catch (XMLDBException e) {

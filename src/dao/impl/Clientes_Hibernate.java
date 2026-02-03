@@ -9,7 +9,6 @@ import jakarta.persistence.EntityExistsException;
 import modelos.Cliente;
 import util.HibernateUtil;
 
-
 public class Clientes_Hibernate implements DAOcliente {
 
 	private static final SessionFactory fabrica = HibernateUtil.getSessionFactory();
@@ -30,9 +29,16 @@ public class Clientes_Hibernate implements DAOcliente {
 
 	@Override
 	public Cliente getOne(int id) {
+
 		Session sesion = fabrica.openSession();
-		Cliente cliente = sesion.get(Cliente.class, id);
-		sesion.close();
+		Cliente cliente = null;
+		try {
+			cliente = sesion.get(Cliente.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sesion.close();
+		}
 		return cliente;
 	}
 
@@ -47,7 +53,6 @@ public class Clientes_Hibernate implements DAOcliente {
 			sesion.merge(cl);
 			tx.commit();
 
-		
 			return true;
 
 		} catch (Exception e) {

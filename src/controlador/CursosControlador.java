@@ -1,7 +1,7 @@
 package controlador;
 
 import dao.DAOCursos;
-
+import dao.impl.Cursos_ExistDB;
 import dao.impl.Cursos_Hibernate;
 import dao.impl.Cursos_Neodatis;
 
@@ -21,7 +21,7 @@ public class CursosControlador {
 			
 			return new Cursos_Neodatis();
 		case 3:
-			
+			return new Cursos_ExistDB();
 			
 		default:
 			System.err.println("Tipo de BD no válido");

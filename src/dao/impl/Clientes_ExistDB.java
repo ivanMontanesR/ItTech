@@ -120,7 +120,7 @@ public class Clientes_ExistDB implements DAOcliente {
             String xquery = "update replace doc('/db/ITtech/clientes.xml')//cliente[id_cliente=" + cl.getIdCliente() + "] with " + clienteXML;
             service.query(xquery);
 
-            System.out.println("Cliente actualizado");
+            
             return true;
 
         } catch (XMLDBException e) {

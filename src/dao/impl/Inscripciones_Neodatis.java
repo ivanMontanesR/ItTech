@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.neodatis.odb.ODB;
-import org.neodatis.odb.ODBFactory;
 import org.neodatis.odb.Objects;
 import org.neodatis.odb.core.query.IQuery;
 import org.neodatis.odb.core.query.criteria.Where;
@@ -39,25 +38,33 @@ public class Inscripciones_Neodatis implements DAOInscripciones {
 	}
 
 	@Override
-	public Boolean Create(Inscripcion in) {
-
-		try {
-
-			baseDatos.store(in);
-			baseDatos.commit();
-
-			return true;
-
-		} catch (Exception e) {
-			System.err.println("Error al crear Inscripcion: " + e.getMessage());
-			e.printStackTrace();
-			if (baseDatos != null) {
-				baseDatos.rollback();
-			}
-			return false;
-		}
+	public Boolean Create(Inscripcion ins) {
+	    try {
+	        IQuery consulta = new CriteriaQuery(Inscripcion.class);
+	        Objects<Inscripcion> resultado = baseDatos.getObjects(consulta);
+	        
+	        int maxId = 0;
+	        while (resultado.hasNext()) {
+	            Inscripcion i = resultado.next();  
+	            if (i.getIdInscripcion() != null&& i.getIdInscripcion() > maxId) {
+	                maxId = i.getIdInscripcion();
+	            }
+	        }
+	        
+	        ins.setIdInscripcion(maxId + 1);
+	        
+	        baseDatos.store(ins);
+	        baseDatos.commit();
+	        return true;
+	    } catch (Exception e) {
+	        System.err.println("Error al crear inscripcion: " + e.getMessage());
+	        e.printStackTrace();
+	        if (baseDatos != null) {
+	            baseDatos.rollback();
+	        }
+	        return false;
+	    }
 	}
-
 	@Override
 	public Inscripcion getOne(int id) {
 

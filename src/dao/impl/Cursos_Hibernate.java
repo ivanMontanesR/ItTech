@@ -30,9 +30,15 @@ public class Cursos_Hibernate implements DAOCursos {
 	@Override
 	public Curso getOne(int id) {
 		Session sesion = fabrica.openSession();
-		Curso cliente = sesion.get(Curso.class, id);
-		sesion.close();
-		return cliente;
+		Curso curso = null;
+		try {
+			curso = sesion.get(Curso.class, id);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			sesion.close();
+		}
+		return curso;
 	}
 
 	@Override
@@ -44,7 +50,6 @@ public class Cursos_Hibernate implements DAOCursos {
 			sesion.merge(cur);
 			tx.commit();
 
-			
 			return true;
 
 		} catch (Exception e) {
