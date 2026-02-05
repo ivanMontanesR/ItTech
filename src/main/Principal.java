@@ -21,11 +21,15 @@ public class Principal {
 		System.out.println("1. MySQL ");
 		System.out.println("2. Neodatis ");
 		System.out.println("3. Exist-DB ");
+		System.out.println("0. Salir ");
 
 		int tipoBD = Usuario.leerEnteroPositivo();
 
 		String nombreBD = "";
 		switch (tipoBD) {
+		case 0:
+
+			break;
 		case 1:
 			nombreBD = "MySQL con Hibernate";
 			break;
@@ -45,7 +49,7 @@ public class Principal {
 		int opcion = 0;
 
 		do {
-
+			// Menu De Opciones para elegir BD
 			System.out.println("\nQue Desea Hacer?");
 			System.out.println("1) Gestionar Clientes");
 			System.out.println("2) Gestionar Cursos");
@@ -67,7 +71,7 @@ public class Principal {
 				int opcionCliente = 0;
 
 				do {
-
+					// Menu Gestor De Clientes
 					System.out.println("\n    GESTION DE CLIENTES  ");
 					System.out.println("1) Consultar Todos los Clientes");
 					System.out.println("2) Consultar Un Cliente");
@@ -119,12 +123,12 @@ public class Principal {
 						System.out.println("Edad:");
 						Integer edad = Usuario.leerEnteroRango(0, 120);
 
-						Cliente cl = new Cliente();
-						cl.setNombre(nombre);
-						cl.setApellidos(apellidos);
-						cl.setDireccion(direccion);
-						cl.setEdad(edad);
-						Boolean creado = clienteDAO.Create(cl);
+						Cliente cliente = new Cliente();
+						cliente.setNombre(nombre);
+						cliente.setApellidos(apellidos);
+						cliente.setDireccion(direccion);
+						cliente.setEdad(edad);
+						Boolean creado = clienteDAO.Create(cliente);
 
 						if (creado) {
 							System.out.println("Cliente creado");
@@ -135,14 +139,18 @@ public class Principal {
 					}
 
 					case 4: {
-						System.out.println("ID del cliente:");
-						int id = Usuario.leerEnteroPositivo();
-						Cliente cl = clienteDAO.getOne(id);
-						if (cl == null) {
-							System.err.println("Cliente no encontrado");
-							break;
+						Cliente cliente = null;
+						while (cliente == null) {
+							System.out.println("ID del cliente:");
+							int id = Usuario.leerEnteroPositivo();
+							cliente = clienteDAO.getOne(id);
+
+							if (cliente == null) {
+								System.out.println("Cliente no encontrado. Introduce otro ID");
+								continue; // Reinicia el Bucle
+							}
 						}
-						System.out.println("Cliente actual: " + cl.toString());
+						System.out.println("Cliente actual: " + cliente.toString());
 						System.out.println("Que cambiar?");
 						System.out.println("1. Nombre");
 						System.out.println("2. Apellidos");
@@ -156,26 +164,26 @@ public class Principal {
 						case 1:
 							System.out.println("Nuevo Nombre:");
 							String nombre = Usuario.leerString();
-							cl.setNombre(nombre);
+							cliente.setNombre(nombre);
 							break;
 
 						case 2:
 							System.out.println("Nuevos Apellidos:");
 							String apellidos = Usuario.leerString();
-							cl.setApellidos(apellidos);
+							cliente.setApellidos(apellidos);
 							break;
 
 						case 3:
 							System.out.println("Nueva Direccion:");
 							String direccion = Usuario.leerAlfanumericos();
-							cl.setDireccion(direccion);
+							cliente.setDireccion(direccion);
 							break;
 
 						case 4:
 							System.out.println("Nueva Edad:");
 							Integer edad = Usuario.leerEnteroRango(0, 120);
 
-							cl.setEdad(edad);
+							cliente.setEdad(edad);
 
 							break;
 
@@ -183,12 +191,12 @@ public class Principal {
 							break;
 
 						default:
-							System.err.println("Opcion no valida");
+							System.out.println("Opcion no valida");
 							break;
 						}
 
 						if (opcionUpdate >= 1 && opcionUpdate <= 4) {
-							Boolean actualizado = clienteDAO.Update(cl);
+							Boolean actualizado = clienteDAO.Update(cliente);
 							if (actualizado) {
 								System.out.println("Cliente actualizado");
 							} else {
@@ -199,16 +207,33 @@ public class Principal {
 					}
 
 					case 5: {
-						System.out.println("ID del cliente:");
-						int id = Usuario.leerEnteroPositivo();
+						boolean borrado = false;
 
-						Boolean borrado = clienteDAO.Borrar(id);
+						while (!borrado) {
+							System.out.println("id del cliente:");
+							int id = Usuario.leerEnteroPositivo();
+							Cliente cliente = clienteDAO.getOne(id);
 
-						if (borrado) {
-							System.out.println("Cliente borrado");
-						} else {
-							System.out.println("Error al borrar");
+							if (cliente == null) {
+								System.out.println("No existe ningun cliente con ID " + id);
+								continue;// Con esto reinicializamos el bucle hasta que el usuario ponga un id valido
+							}
+							System.out.println("¿Desea eliminar este Cliente? S/N\n" + cliente);
+							boolean confirmacion = Usuario.leerConfirmacion();
+
+							if (confirmacion) {
+								borrado = clienteDAO.Borrar(id);
+
+								if (borrado) {
+									System.out.println("Cliente borrado correctamente");
+								} else {
+									System.out.println("Error al borrar. Inténtalo de nuevo");
+								}
+							} else {
+								System.out.println("Borrado Cancelado introduce otro ID");
+							}
 						}
+
 						break;
 					}
 
@@ -230,14 +255,13 @@ public class Principal {
 				DAOCursos cursoDAO = controladorCurso.getCursosDAO();
 
 				if (cursoDAO == null) {
-					System.out.println("No se pudo crear el DAO");
+					System.out.println("No se pudo crear el dao");
 					break;
 				}
-
 				int opcionCurso = 0;
 
 				do {
-
+					// Menu Gestor De Cursos
 					System.out.println("\n    GESTION DE CURSOS   ");
 					System.out.println("1) Consultar Todos los Cursos");
 					System.out.println("2) Consultar Un Curso");
@@ -286,12 +310,12 @@ public class Principal {
 						System.out.println("Duracion (horas):");
 						Integer duracion = Usuario.leerEnteroPositivo();
 
-						Curso nuevoCurso = new Curso();
-						nuevoCurso.setNombreCurso(nombre);
-						nuevoCurso.setDescripcion(descripcion);
-						nuevoCurso.setDuracion(duracion);
+						Curso curso = new Curso();
+						curso.setNombreCurso(nombre);
+						curso.setDescripcion(descripcion);
+						curso.setDuracion(duracion);
 
-						Boolean creado = cursoDAO.Create(nuevoCurso);
+						Boolean creado = cursoDAO.Create(curso);
 
 						if (creado) {
 							System.out.println("Curso creado");
@@ -302,13 +326,17 @@ public class Principal {
 					}
 
 					case 4: {
-						System.out.println("ID del curso:");
-						int id = Usuario.leerEnteroPositivo();
 
-						Curso curso = cursoDAO.getOne(id);
-						if (curso == null) {
-							System.err.println("Curso no encontrado");
-							break;
+						Curso curso = null;
+						while (curso == null) {
+							System.out.println("ID del Curso:");
+							int id = Usuario.leerEnteroPositivo();
+							curso = cursoDAO.getOne(id);
+
+							if (curso == null) {
+								System.out.println("Curso no encontrado. Introduce otro ID");
+								continue; // Reinicia el Bucle
+							}
 						}
 
 						System.out.println("Curso actual: " + curso.toString());
@@ -343,7 +371,7 @@ public class Principal {
 							break;
 
 						default:
-							System.err.println("Opcion no valida");
+							System.out.println("Opcion no valida");
 						}
 
 						if (opcionUpdate >= 1 && opcionUpdate <= 3) {
@@ -359,19 +387,36 @@ public class Principal {
 					}
 
 					case 5: {
-						System.out.println("ID del curso:");
-						int id = Usuario.leerEnteroPositivo();
+						boolean borrado = false;
 
-						Boolean borrado = cursoDAO.Borrar(id);
+						while (!borrado) {
+							System.out.println("id del curso:");
+							int id = Usuario.leerEnteroPositivo();
+							Curso curso = cursoDAO.getOne(id);
 
-						if (borrado) {
-							System.out.println("Curso borrado");
-						} else {
-							System.out.println("Error al borrar");
+							if (curso == null) {
+								System.out.println("No existe ningun curso con ID " + id);
+								continue;// Reiniciamos Bucle si no existe curso
+							}
+
+							System.out.println("¿Desea eliminar este Curso? S/N\n" + curso);
+							boolean confirmacion = Usuario.leerConfirmacion();
+
+							if (confirmacion) {
+								borrado = cursoDAO.Borrar(id);
+
+								if (borrado) {
+									System.out.println("Curso borrado correctamente");
+								} else {
+									System.out.println("Error al borrar. Intentalo de nuevo");
+								}
+							} else {
+								System.out.println("Borrado Cancelado introduce otro ID");
+							}
 						}
+
 						break;
 					}
-
 					case 0:
 						break;
 
@@ -403,7 +448,7 @@ public class Principal {
 				int opcionInscripcion = 0;
 
 				do {
-
+					// Menu Gestor De Inscripciones
 					System.out.println("\n    GESTION DE INSCRIPCIONES   ");
 					System.out.println("1) Consultar Todas las Inscripciones");
 					System.out.println("2) Consultar Una Inscripcion");
@@ -443,33 +488,54 @@ public class Principal {
 					}
 
 					case 3: {
-						System.out.println("ID del Cliente:");
-						int idCliente = Usuario.leerEnteroPositivo();
-
-						System.out.println("ID del Curso:");
-						int idCurso = Usuario.leerEnteroPositivo();
-
-						System.out.println("Fecha de Inscripcion (YYYY-MM-DD):");
-						Date fecha = Usuario.leerFechaSQL();
-
+						Cliente cliente = null;
+						Curso curso = null;
 						try {
-							Cliente cliente = clienteDAO.getOne(idCliente);
 
-							if (cliente == null) {
-								System.err.println("Cliente con ID " + idCliente + " no encontrado");
-								break;
+							while (cliente == null) {
+								System.out.println("ID del cliente:");
+								int id = Usuario.leerEnteroPositivo();
+								cliente = clienteDAO.getOne(id);
+
+								if (cliente == null) {
+									System.out.println("Cliente no encontrado. Introduce otro ID");
+									continue;
+								}
+
+								System.out.println(cliente);
+								System.out.println("¿Es este el cliente correcto? S/N");
+								boolean confirmacion = Usuario.leerConfirmacion();
+
+								if (!confirmacion) {
+									cliente = null;
+								}
 							}
 
-							Curso curso = cursoDAO.getOne(idCurso);
+							while (curso == null) {
+								System.out.println("ID del curso:");
+								int idCurso = Usuario.leerEnteroPositivo();
+								curso = cursoDAO.getOne(idCurso);
 
-							if (curso == null) {
-								System.err.println("Curso con ID " + idCurso + " no encontrado");
-								break;
+								if (curso == null) {
+									System.out.println("Curso no encontrado. Introduce otro ID");
+									continue;
+								}
+
+								System.out.println(curso);
+								System.out.println("¿Es este el curso correcto? S/N");
+								boolean confirmacion = Usuario.leerConfirmacion();
+
+								if (!confirmacion) {
+									curso = null; 
+								}
 							}
 
-							Inscripcion nuevaInscripcion = new Inscripcion(curso, cliente, fecha);
+							System.out.println("Fecha de Inscripcion (YYYY-MM-DD):");
+							Date fecha = Usuario.leerFechaSQL();
 
-							Boolean creada = inscripcionDAO.Create(nuevaInscripcion);
+							Inscripcion inscripcion = new Inscripcion(curso, cliente, fecha);
+
+							Boolean creada = inscripcionDAO.Create(inscripcion);
 
 							if (creada) {
 								System.out.println("Inscripcion creada exitosamente");
@@ -478,19 +544,23 @@ public class Principal {
 							}
 
 						} catch (IllegalArgumentException e) {
-							System.err.println("Formato de fecha invalido. Use YYYY-MM-DD");
+							System.out.println("Formato de fecha invalido. usa YYYY-MM-DD");
 						}
 						break;
 					}
 
 					case 4: {
-						System.out.println("ID de la inscripcion:");
-						int id = Usuario.leerEnteroPositivo();
 
-						Inscripcion inscripcion = inscripcionDAO.getOne(id);
-						if (inscripcion == null) {
-							System.err.println("Inscripcion no encontrada");
-							break;
+						Inscripcion inscripcion = null;
+						while (inscripcion == null) {
+							System.out.println("ID de la Inscripcion:");
+							int id = Usuario.leerEnteroPositivo();
+							inscripcion = inscripcionDAO.getOne(id);
+
+							if (inscripcion == null) {
+								System.out.println("Inscripcion no encontrada. Introduce otro ID");
+								continue; // Reinicia el Bucle
+							}
 						}
 
 						System.out.println("Inscripcion actual: " + inscripcion.toString());
@@ -504,27 +574,35 @@ public class Principal {
 
 						switch (opcionUpdate) {
 						case 1:
-							System.out.println("Nuevo ID de Cliente:");
-							int idCliente = Usuario.leerEnteroPositivo();
-							Cliente cliente = clienteDAO.getOne(idCliente);
-							
-							if (cliente == null) {
-								System.err.println("Cliente no encontrado");
-								break;
+
+							Cliente cliente = null;
+							while (cliente == null) {
+								System.out.println("Nuevo ID de Cliente:");
+								int idCliente = Usuario.leerEnteroPositivo();
+								cliente = clienteDAO.getOne(idCliente);
+
+								if (cliente == null) {
+									System.out.println("Cliente no encontrado. Introduce otro ID");
+									continue;
+								}
 							}
 							inscripcion.setClientes(cliente);
 							break;
 
 						case 2:
-							System.out.println("Nuevo id de Curso:");
-							int idCurso = Usuario.leerEnteroPositivo();
-							Curso curso = cursoDAO.getOne(idCurso);
+							Curso curso = null;
+							while (curso == null) {
+								System.out.println("Nuevo ID de Curso:");
+								int idCurso = Usuario.leerEnteroPositivo();
+								curso = cursoDAO.getOne(idCurso);
 
-							if (curso == null) {
-								System.err.println("Curso no encontrado");
-								break;
+								if (curso == null) {
+									System.out.println("Curso no encontrado. Introduce otro ID");
+									continue;
+								}
 							}
 							inscripcion.setCursos(curso);
+
 							break;
 
 						case 3:
@@ -539,7 +617,7 @@ public class Principal {
 							break;
 
 						default:
-							System.err.println("Opcion no valida");
+							System.out.println("Opcion no valida");
 						}
 
 						if (opcionUpdate >= 1 && opcionUpdate <= 3) {
@@ -555,16 +633,34 @@ public class Principal {
 					}
 
 					case 5: {
-						System.out.println("ID de la inscripcion:");
-						int id = Usuario.leerEnteroPositivo();
+						boolean borrado = false;
 
-						Boolean borrada = inscripcionDAO.Borrar(id);
+						while (!borrado) {
+							System.out.println("id de la Inscripcion:");
+							int id = Usuario.leerEnteroPositivo();
+							Inscripcion inscripcion = inscripcionDAO.getOne(id);
 
-						if (borrada) {
-							System.out.println("Inscripcion borrada");
-						} else {
-							System.out.println("Error al borrar");
+							if (inscripcion == null) {
+								System.out.println("No existe ninguna inscripcion con ID " + id);
+								continue; // Saltamos al principio del while y no sigue ejecutando el bucle
+							}
+
+							System.out.println("¿Desea eliminar esta inscripcion? S/N\n" + inscripcion);
+							boolean confirmacion = Usuario.leerConfirmacion();
+
+							if (confirmacion) {
+								borrado = inscripcionDAO.Borrar(id);
+
+								if (borrado) {
+									System.out.println("Inscripcion borrada correctamente");
+								} else {
+									System.out.println("Error al borrar. Intentalo de nuevo");
+								}
+							} else {
+								System.out.println("Borrado Cancelado introduce otro ID");
+							}
 						}
+
 						break;
 					}
 

@@ -210,6 +210,7 @@ public class Usuario {
 		}
 		return texto;
 	}
+
 	public static String leerAlfanumericos() {
 		String texto = "";
 		boolean valido = false;
@@ -228,30 +229,22 @@ public class Usuario {
 	}
 
 	public static boolean leerConfirmacion() {
-		char respuesta;
-		boolean valido = false;
-		boolean resultado = false;
-
-		while (!valido) {
+		while (true) {
 			String input = sc.nextLine().trim().toUpperCase();
 
-			if (input.length() > 0) {
-				respuesta = input.charAt(0);
-
-				if (respuesta == 'S') {
-					resultado = true;
-					valido = true;
-				} else if (respuesta == 'N') {
-					resultado = false;
-					valido = true;
-				} else {
-					System.out.println("Error: Responde con S (Sí) o N (No).");
-				}
-			} else {
+			if (input.isEmpty()) {
 				System.out.println("Error: Debes introducir una respuesta.");
+				continue;
 			}
+
+			char respuesta = input.charAt(0);
+
+			if (respuesta == 'S')
+				return true;
+			if (respuesta == 'N')
+				return false;
+
 		}
-		return resultado;
 	}
 
 	public static LocalDate leerFecha() {
@@ -348,8 +341,7 @@ public class Usuario {
 		}
 		return fecha;
 	}
-	
-    
+
 	/**
 	 * Lee una fecha dentro de un rango específico
 	 * 

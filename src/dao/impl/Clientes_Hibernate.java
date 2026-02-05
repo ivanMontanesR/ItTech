@@ -10,9 +10,16 @@ import modelos.Cliente;
 import util.HibernateUtil;
 
 public class Clientes_Hibernate implements DAOcliente {
-
+	/*
+	 * USamos el Util de getSessionFactory para la creacion de "fabricas" para el
+	 * uso de las transacciones
+	 */
 	private static final SessionFactory fabrica = HibernateUtil.getSessionFactory();
 
+	/*
+	 * Metodo para Conseguir todos los Clientes Haciendo la query From Cliente.list
+	 * para crear una lista
+	 */
 	@Override
 	public List<Cliente> getAll() {
 		Session sesion = fabrica.openSession();
@@ -27,6 +34,10 @@ public class Clientes_Hibernate implements DAOcliente {
 		return clientes;
 	}
 
+	/*
+	 * Metodo para recuperar un cliente, Pasando el id como parametro, al sesion.get
+	 * especificando la clase Cliente y el id que haya introducido El usuario
+	 */
 	@Override
 	public Cliente getOne(int id) {
 
@@ -34,6 +45,7 @@ public class Clientes_Hibernate implements DAOcliente {
 		Cliente cliente = null;
 		try {
 			cliente = sesion.get(Cliente.class, id);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -42,15 +54,19 @@ public class Clientes_Hibernate implements DAOcliente {
 		return cliente;
 	}
 
+	/*
+	 * Metodo para Actualizar un cliente el cual le pasaremos el objeto cliente y
+	 * usaremos el merge para actualizarlo
+	 */
 	@Override
-	public Boolean Update(Cliente cl) {
+	public Boolean Update(Cliente cliente) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 
 		try {
 
 			tx = sesion.beginTransaction();
-			sesion.merge(cl);
+			sesion.merge(cliente);
 			tx.commit();
 
 			return true;
@@ -67,23 +83,17 @@ public class Clientes_Hibernate implements DAOcliente {
 		}
 	}
 
+	// Metodo para borrar Un cliente con el id que nos de el usuario Con el remove
 	@Override
 	public Boolean Borrar(int id) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 
 		try {
-
-			Cliente cl = sesion.get(Cliente.class, id);
-
-			if (cl == null) {
-				System.err.println("Cliente no encontrado");
-				return false;
-			}
-
-			System.out.println("Voy a borrar:\n" + cl.toString());
 			tx = sesion.beginTransaction();
-			sesion.remove(cl);
+			Cliente cliente = sesion.get(Cliente.class, id);
+
+			sesion.remove(cliente);
 			tx.commit();
 			return true;
 
@@ -99,14 +109,18 @@ public class Clientes_Hibernate implements DAOcliente {
 		}
 	}
 
+	/*
+	 * Metodo para Crear un cliente nuevo pasandole el objeto como parametro y
+	 * insertandolo con el persist
+	 */
 	@Override
-	public Boolean Create(Cliente cl) {
+	public Boolean Create(Cliente cliente) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 
 		try {
 			tx = sesion.beginTransaction();
-			sesion.persist(cl);
+			sesion.persist(cliente);
 			tx.commit();
 			return true;
 

@@ -14,9 +14,15 @@ import util.HibernateUtil;
 
 
 public class Inscripciones_Hibernate implements DAOInscripciones {
-
+	/*
+	 * USamos el Util de getSessionFactory para la creacion de "fabricas" para el
+	 * uso de las transacciones
+	 */
 	private static final SessionFactory fabrica = HibernateUtil.getSessionFactory();
-
+	/*
+	 * Metodo para Conseguir todos las Inscripciones Haciendo la query From Inscripcion.list Pero como tiene Relaciones 
+	 * A Clientes y Cursos hay que poner join fetch para que recupere los objetos cliente y curso
+	 */
 	@Override
 	public List<Inscripcion> getAll() {
 		Session sesion = fabrica.openSession();
@@ -30,7 +36,12 @@ public class Inscripciones_Hibernate implements DAOInscripciones {
 		}
 		return inscripciones;
 	}
-
+	
+	/*
+	 * Metodo para recuperar una inscripcion, Pasando el id como parametro, 
+	 * Aqui tamien usamos el join fetch para recuperar los objetpos y como
+	 * solo queremos uno solo usamos el uniqueResult 
+	 */
 	@Override
 	public Inscripcion getOne(int id) {
 		Session sesion = fabrica.openSession();
@@ -47,15 +58,18 @@ public class Inscripciones_Hibernate implements DAOInscripciones {
 		}
 		return inscripcion;
 	}
-
+	/*
+	 * Metodo para Actualizar una Inscripcion el cual le pasaremos el objeto inscripcion y
+	 * usaremos el merge para actualizarlo
+	 */
 	@Override
-	public Boolean Update(Inscripcion ins) {
+	public Boolean Update(Inscripcion inscripcion) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 
 		try {
 			tx = sesion.beginTransaction();
-			sesion.merge(ins);
+			sesion.merge(inscripcion);
 			tx.commit();
 
 			
@@ -73,22 +87,23 @@ public class Inscripciones_Hibernate implements DAOInscripciones {
 		}
 	}
 
+	// Metodo para borrar Una Inscripcio con el id que nos de el usuario Con el remove
 	@Override
 	public Boolean Borrar(int id) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 
 		try {
-			Inscripcion ins = sesion.get(Inscripcion.class, id);
+			Inscripcion inscripcion = sesion.get(Inscripcion.class, id);
 
-			if (ins == null) {
+			if (inscripcion == null) {
 				System.err.println("Inscripción no encontrada");
 				return false;
 			}
 
-			System.out.println("Voy a borrar:\n" + ins.toString());
+			System.out.println("Voy a borrar:\n" + inscripcion.toString());
 			tx = sesion.beginTransaction();
-			sesion.remove(ins);
+			sesion.remove(inscripcion);
 			tx.commit();
 			return true;
 
@@ -103,7 +118,10 @@ public class Inscripciones_Hibernate implements DAOInscripciones {
 			sesion.close();
 		}
 	}
-
+	/*
+	 * Metodo para Crear una Inscripcion nueva pasandole el objeto como parametro y
+	 * insertandolo con el persist
+	 */
 	@Override
 	public Boolean Create(Inscripcion inscripcion) {
 		Session sesion = fabrica.openSession();

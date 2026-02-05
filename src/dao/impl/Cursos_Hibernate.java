@@ -10,9 +10,16 @@ import modelos.Curso;
 import util.HibernateUtil;
 
 public class Cursos_Hibernate implements DAOCursos {
-
+	/*
+	 * USamos el Util de getSessionFactory para la creacion de "fabricas" para el
+	 * uso de las transacciones
+	 */
 	private static final SessionFactory fabrica = HibernateUtil.getSessionFactory();
 
+	/*
+	 * Metodo para Conseguir todos los Cursos Haciendo la query From Curso.list para
+	 * crear una lista
+	 */
 	@Override
 	public List<Curso> getAll() {
 		Session sesion = fabrica.openSession();
@@ -27,6 +34,10 @@ public class Cursos_Hibernate implements DAOCursos {
 		return cursos;
 	}
 
+	/*
+	 * Metodo para recuperar un Curso, Pasando el id como parametro, al sesion.get
+	 * especificando la clase Curso y el id que haya introducido El usuario
+	 */
 	@Override
 	public Curso getOne(int id) {
 		Session sesion = fabrica.openSession();
@@ -41,13 +52,17 @@ public class Cursos_Hibernate implements DAOCursos {
 		return curso;
 	}
 
+	/*
+	 * Metodo para Actualizar un curso el cual le pasaremos el objeto curso y
+	 * usaremos el merge para actualizarlo
+	 */
 	@Override
-	public Boolean Update(Curso cur) {
+	public Boolean Update(Curso curso) {
 		Session sesion = fabrica.openSession();
 		Transaction tx = null;
 		try {
 			tx = sesion.beginTransaction();
-			sesion.merge(cur);
+			sesion.merge(curso);
 			tx.commit();
 
 			return true;
@@ -63,7 +78,8 @@ public class Cursos_Hibernate implements DAOCursos {
 			sesion.close();
 		}
 	}
-
+	
+	// Metodo para borrar Un Curso con el id que nos de el usuario con el remove
 	@Override
 	public Boolean Borrar(int id) {
 		Session sesion = fabrica.openSession();
@@ -71,16 +87,13 @@ public class Cursos_Hibernate implements DAOCursos {
 
 		try {
 
-			Curso cur = sesion.get(Curso.class, id);
+			Curso curso = sesion.get(Curso.class, id);
 
-			if (cur == null) {
-				System.err.println("Curso no encontrado");
-				return false;
-			}
+			
 
-			System.out.println("Voy a borrar:\n" + cur.toString());
+			System.out.println("Voy a borrar:\n" + curso.toString());
 			tx = sesion.beginTransaction();
-			sesion.remove(cur);
+			sesion.remove(curso);
 			tx.commit();
 			return true;
 
@@ -95,7 +108,10 @@ public class Cursos_Hibernate implements DAOCursos {
 			sesion.close();
 		}
 	}
-
+	/*
+	 * Metodo para Crear un curso nuevo pasandole el objeto como parametro y
+	 * insertandolo con el persist
+	 */
 	@Override
 	public Boolean Create(Curso curso) {
 		Session sesion = fabrica.openSession();

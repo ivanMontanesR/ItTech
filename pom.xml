@@ -19,7 +19,7 @@
       <version>8.0.33</version>
     </dependency>
     
-    <!-- ========== Hibernate ========== -->
+    <!--  Hibernate  -->
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
@@ -32,7 +32,7 @@
       <version>6.0.6.Final</version>
     </dependency>
     
-    <!-- ========== Jakarta APIs ========== -->
+    <!-- Jakarta APIs -->
     <dependency>
       <groupId>jakarta.persistence</groupId>
       <artifactId>jakarta.persistence-api</artifactId>
@@ -63,7 +63,7 @@
       <version>2.0.1</version>
     </dependency>
     
-    <!-- ========== JAXB Implementation ========== -->
+    <!--JAXB Implementation -->
     <dependency>
       <groupId>org.glassfish.jaxb</groupId>
       <artifactId>jaxb-runtime</artifactId>
@@ -88,42 +88,25 @@
       <version>2.0.0</version>
     </dependency>
     
-    <!-- ========== Hibernate Dependencies ========== -->
+    <!-- Hibernate Dependencias -->
+   
     <dependency>
-      <groupId>net.bytebuddy</groupId>
-      <artifactId>byte-buddy</artifactId>
-      <version>1.14.11</version>
-    </dependency>
-    
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-api</artifactId>
+    <version>2.20.0</version>
+	</dependency>
+
+	<dependency>
+    <groupId>org.apache.logging.log4j</groupId>
+    <artifactId>log4j-core</artifactId>
+    <version>2.20.0</version>
+	</dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-runtime</artifactId>
       <version>4.13.0</version>
     </dependency>
     
-    <dependency>
-      <groupId>com.fasterxml</groupId>
-      <artifactId>classmate</artifactId>
-      <version>1.5.1</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>io.smallrye</groupId>
-      <artifactId>jandex</artifactId>
-      <version>3.1.2</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>org.jboss.logging</groupId>
-      <artifactId>jboss-logging</artifactId>
-      <version>3.5.0.Final</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.sun.istack</groupId>
-      <artifactId>istack-commons-runtime</artifactId>
-      <version>4.1.1</version>
-    </dependency>
     
     
     <dependency>

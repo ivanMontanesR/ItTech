@@ -14,9 +14,16 @@ import modelos.Curso;
 import util.ConexionNeodatis;
 
 public class Cursos_Neodatis implements DAOCursos {
-
+	/*
+	 * Creamos el Util de neodatis para crear la instancia del ODB para usarlo en
+	 * todos los metodos
+	 */
 	private ODB baseDatos = ConexionNeodatis.getInstancia();
 
+	/*
+	 * Metodo para Conseguir todos los Cursos Haciendo un array de objetos Curso y
+	 * añadiendolos Posteriormente a una lista
+	 */
 	@Override
 	public List<Curso> getAll() {
 
@@ -33,45 +40,54 @@ public class Cursos_Neodatis implements DAOCursos {
 		} catch (Exception e) {
 			System.err.println("Error al obtener cursos: " + e.getMessage());
 			e.printStackTrace();
-		} 
+		}
 
 		return cursos;
 	}
+	/*
+	 * Metodo De Creacion de Curso el cual recibimos el Curso como parametro y
+	 * Hayamos primero cual es el maximo Id Insertado para insertar el siguiente con
+	 * el maxID +1 y insertandolo con el Store
+	 */
 
-	
 	@Override
 	public Boolean Create(Curso cur) {
-	    try {
-	        IQuery consulta = new CriteriaQuery(Curso.class);
-	        Objects<Curso> resultado = baseDatos.getObjects(consulta);
-	        
-	        int maxId = 0;
-	        while (resultado.hasNext()) {
-	            Curso c = resultado.next();  
-	            if (c.getIdCurso() != null && c.getIdCurso() > maxId) {
-	                maxId = c.getIdCurso();
-	            }
-	        }
-	        
-	        cur.setIdCurso(maxId + 1);
-	        
-	        baseDatos.store(cur);
-	        baseDatos.commit();
-	        return true;
-	    } catch (Exception e) {
-	        System.err.println("Error al crear curso: " + e.getMessage());
-	        e.printStackTrace();
-	        if (baseDatos != null) {
-	            baseDatos.rollback();
-	        }
-	        return false;
-	    }
+		try {
+			IQuery consulta = new CriteriaQuery(Curso.class);
+			Objects<Curso> resultado = baseDatos.getObjects(consulta);
+
+			int maxId = 0;
+			while (resultado.hasNext()) {
+				Curso c = resultado.next();
+				if (c.getIdCurso() != null && c.getIdCurso() > maxId) {
+					maxId = c.getIdCurso();
+				}
+			}
+
+			cur.setIdCurso(maxId + 1);
+
+			baseDatos.store(cur);
+			baseDatos.commit();
+			return true;
+		} catch (Exception e) {
+			System.err.println("Error al crear curso: " + e.getMessage());
+			e.printStackTrace();
+			if (baseDatos != null) {
+				baseDatos.rollback();
+			}
+			return false;
+		}
 	}
 
+	/*
+	 * Metodo para recuperar un Curso con un id que nos de el usuario el cual
+	 * usaremos el criteryaquery Con el where equal para comprobar el id del curso
+	 * con el id que nos han dado
+	 */
 	@Override
 	public Curso getOne(int id) {
 
-		Curso cursoEncontrado = null;
+		Curso curso = null;
 
 		try {
 
@@ -79,17 +95,21 @@ public class Cursos_Neodatis implements DAOCursos {
 			Objects<Curso> resultado = baseDatos.getObjects(consulta);
 
 			if (resultado.hasNext()) {
-				cursoEncontrado = resultado.next();
+				curso = resultado.next();
 
 			}
 		} catch (Exception e) {
 			System.err.println("Error al buscar Curso: " + e.getMessage());
 			e.printStackTrace();
-		} 
+		}
 
-		return cursoEncontrado;
+		return curso;
 	}
 
+	/*
+	 * Metodo Para actualizar un cliente previamente recuperado en el principal el
+	 * cual insertaremos con el store
+	 */
 	@Override
 	public Boolean Update(Curso cur) {
 
@@ -110,16 +130,18 @@ public class Cursos_Neodatis implements DAOCursos {
 
 		}
 	}
-
+	/*
+	 * Metodo Para Borrar Curso con un id como parametro, con el comando delete
+	 */
 	@Override
 	public Boolean Borrar(int id) {
 
 		try {
 
-			Curso cursoBorrar = getOne(id);
+			Curso curso = getOne(id);
 
-			if (cursoBorrar != null) {
-				baseDatos.delete(cursoBorrar);
+			if (curso != null) {
+				baseDatos.delete(curso);
 				baseDatos.commit();
 
 				return true;

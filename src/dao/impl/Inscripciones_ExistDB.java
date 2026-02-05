@@ -16,141 +16,168 @@ import modelos.Inscripcion;
 import util.ConexionExistDB;
 
 public class Inscripciones_ExistDB implements DAOInscripciones {
+	/*
+	 * Creamos el Util de ExistDB para obtener la instancia de Collection y usarla
+	 * en todos los Metodos, Como para inscripciones Trabajamos con Objetos Cliente y Curso
+	 * Tambien Crearemos sus Dao Para el manejo de estos
+	 */
 
-    private Collection col = ConexionExistDB.getInstancia();
-    private Clientes_ExistDB clienteDAO = new Clientes_ExistDB();
-    private Cursos_ExistDB cursoDAO = new Cursos_ExistDB();
+	private Collection col = ConexionExistDB.getInstancia();
+	private Clientes_ExistDB clienteDAO = new Clientes_ExistDB();
+	private Cursos_ExistDB cursoDAO = new Cursos_ExistDB();
 
-    @Override
-    public List<Inscripcion> getAll() {
-        List<Inscripcion> inscripciones = new ArrayList<>();
-        try {
-            XPathQueryService service = (XPathQueryService) col.getService("XPathQueryService", "1.0");
-            ResourceSet result = service.query("//inscripcion/id_inscripcion/text()");
-            ResourceIterator it = result.getIterator();
-            while (it.hasMoreResources()) {
-                int id = Integer.parseInt(it.nextResource().getContent().toString());
-                inscripciones.add(getOne(id));
-            }
-        } catch (XMLDBException e) {
-            System.err.println("Error al obtener inscripciones: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return inscripciones;
-    }
+	/*
+	 * Metodo para conseguir todas las inscripciones haciendo una query XPath
+	 * que obtiene todos los id_Inscripciones y posteriormente recupera cada inscripcion completa
+	 * añadiéndolos a una lista
+	 */
+	@Override
+	public List<Inscripcion> getAll() {
+		List<Inscripcion> inscripciones = new ArrayList<>();
+		try {
+			XPathQueryService service = (XPathQueryService) col.getService("XPathQueryService", "1.0");
+			ResourceSet result = service.query("//inscripcion/id_inscripcion/text()");
+			ResourceIterator it = result.getIterator();
+			while (it.hasMoreResources()) {
+				int id = Integer.parseInt(it.nextResource().getContent().toString());
+				inscripciones.add(getOne(id));
+			}
+		} catch (XMLDBException e) {
+			System.err.println("Error al obtener inscripciones: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return inscripciones;
+	}
 
-    @Override
-    public Inscripcion getOne(int id) {
-        Inscripcion inscripcion = null;
-        try {
-            XPathQueryService service = (XPathQueryService) col.getService("XPathQueryService", "1.0");
-            ResourceSet result = service.query("//inscripcion[id_inscripcion=" + id + "]");
-            if (result.getSize() == 0) return null;
+	/*
+	 * Metodo para recuperar una inscripcion con un id que nos de el usuario
+	 * Utiliza XPath para buscar la inscripcion por id y recupera cada objeto con el getOne
+	 * Que necesitemos
+	 */
+	@Override
+	public Inscripcion getOne(int id) {
+		Inscripcion inscripcion = null;
+		try {
+			XPathQueryService service = (XPathQueryService) col.getService("XPathQueryService", "1.0");
+			ResourceSet result = service.query("//inscripcion[id_inscripcion=" + id + "]");
+			if (result.getSize() == 0)
+				return null;
 
-            result = service.query("//inscripcion[id_inscripcion=" + id + "]/id_cliente/text()");
-            int idCliente = Integer.parseInt(result.getResource(0).getContent().toString());
-            Cliente cliente = clienteDAO.getOne(idCliente);
+			result = service.query("//inscripcion[id_inscripcion=" + id + "]/id_cliente/text()");
+			int idCliente = Integer.parseInt(result.getResource(0).getContent().toString());
+			Cliente cliente = clienteDAO.getOne(idCliente);
 
-            result = service.query("//inscripcion[id_inscripcion=" + id + "]/id_curso/text()");
-            int idCurso = Integer.parseInt(result.getResource(0).getContent().toString());
-            Curso curso = cursoDAO.getOne(idCurso);
+			result = service.query("//inscripcion[id_inscripcion=" + id + "]/id_curso/text()");
+			int idCurso = Integer.parseInt(result.getResource(0).getContent().toString());
+			Curso curso = cursoDAO.getOne(idCurso);
 
-            result = service.query("//inscripcion[id_inscripcion=" + id + "]/fecha_inscripcion/text()");
-            Date fecha = Date.valueOf(result.getResource(0).getContent().toString());
+			result = service.query("//inscripcion[id_inscripcion=" + id + "]/fecha_inscripcion/text()");
+			Date fecha = Date.valueOf(result.getResource(0).getContent().toString());
 
-            inscripcion = new Inscripcion(curso, cliente, fecha);
-            inscripcion.setIdInscripcion(id);
+			inscripcion = new Inscripcion(curso, cliente, fecha);
+			inscripcion.setIdInscripcion(id);
 
-        } catch (XMLDBException e) {
-            System.err.println("Error al buscar inscripcion: " + e.getMessage());
-            e.printStackTrace();
-        }
-        return inscripcion;
-    }
+		} catch (XMLDBException e) {
+			System.err.println("Error al buscar inscripcion: " + e.getMessage());
+			e.printStackTrace();
+		}
+		return inscripcion;
+	}
 
-    @Override
-    public Boolean Create(Inscripcion ins) {
-        try {
-            XPathQueryService pathService = (XPathQueryService) col.getService("XPathQueryService", "1.0");
-            ResourceSet idResult = pathService.query("max(doc('/db/ITtech/inscripciones.xml')//id_inscripcion/xs:integer(.))");
-            int nuevoId = 1;
-            if (idResult.getSize() > 0) {
-                Object content = idResult.getResource(0).getContent();
-                if (content != null && !content.toString().equals("")) {
-                    nuevoId = (int) Double.parseDouble(content.toString()) + 1;
-                }
-            }
+	/*
+	 * Metodo de creacion de inscripciones el cual recibe la inscripcion como parametro
+	 * Buscamos primero  el máximo id insertado para insertar el siguiente con maxID + 1
+	 * Construimos el XML de la inscripcion y lo insertamos con XQuery usando update insert
+	 */
+	@Override
+	public Boolean Create(Inscripcion ins) {
+		try {
+			XPathQueryService pathService = (XPathQueryService) col.getService("XPathQueryService", "1.0");
+			ResourceSet idResult = pathService
+					.query("max(doc('/db/ITtech/inscripciones.xml')//id_inscripcion/xs:integer(.))");
+			int nuevoId = 1;
+			if (idResult.getSize() > 0) {
+				Object content = idResult.getResource(0).getContent();
+				if (content != null && !content.toString().equals("")) {
+					nuevoId = (int) Double.parseDouble(content.toString()) + 1;
+				}
+			}
 
-            String inscripcionXML = "<inscripcion>" +
-                    "<id_inscripcion>" + nuevoId + "</id_inscripcion>" +
-                    "<id_cliente>" + ins.getClientes().getIdCliente() + "</id_cliente>" +
-                    "<id_curso>" + ins.getCursos().getIdCurso() + "</id_curso>" +
-                    "<fecha_inscripcion>" + ins.getFechaInscripcion() + "</fecha_inscripcion>" +
-                    "</inscripcion>";
+			String inscripcionXML = "<inscripcion>" + "<id_inscripcion>" + nuevoId + "</id_inscripcion>"
+					+ "<id_cliente>" + ins.getClientes().getIdCliente() + "</id_cliente>" + "<id_curso>"
+					+ ins.getCursos().getIdCurso() + "</id_curso>" + "<fecha_inscripcion>" + ins.getFechaInscripcion()
+					+ "</fecha_inscripcion>" + "</inscripcion>";
 
-            XQueryService service = (XQueryService) col.getService("XQueryService", "1.0");
-            String xquery = "update insert " + inscripcionXML + " into doc('/db/ITtech/inscripciones.xml')/inscripciones";
-            service.query(xquery);
+			XQueryService service = (XQueryService) col.getService("XQueryService", "1.0");
+			String xquery = "update insert " + inscripcionXML
+					+ " into doc('/db/ITtech/inscripciones.xml')/inscripciones";
+			service.query(xquery);
 
-            System.out.println("Inscripcion creada con ID: " + nuevoId);
-            return true;
+			System.out.println("Inscripcion creada con ID: " + nuevoId);
+			return true;
 
-        } catch (XMLDBException e) {
-            System.err.println("Error al crear inscripcion: " + e.getMessage());
-            return false;
-        }
-    }
+		} catch (XMLDBException e) {
+			System.err.println("Error al crear inscripcion: " + e.getMessage());
+			return false;
+		}
+	}
+	/*
+	 * Metodo para actualizar una inscripcion previamente recuperada en el principal
+	 * verificamos que la inscripcion exista, construimos el nuevo XML y lo reemplazamos
+	 * con XQuery usando update replace
+	 */
+	@Override
+	public Boolean Update(Inscripcion ins) {
+		try {
+			XPathQueryService pathService = (XPathQueryService) col.getService("XPathQueryService", "1.0");
+			ResourceSet check = pathService.query("//inscripcion[id_inscripcion=" + ins.getIdInscripcion() + "]");
+			if (check.getSize() == 0) {
+				System.err.println("Inscripcion no encontrada");
+				return false;
+			}
 
-    @Override
-    public Boolean Update(Inscripcion ins) {
-        try {
-            XPathQueryService pathService = (XPathQueryService) col.getService("XPathQueryService", "1.0");
-            ResourceSet check = pathService.query("//inscripcion[id_inscripcion=" + ins.getIdInscripcion() + "]");
-            if (check.getSize() == 0) {
-                System.err.println("Inscripcion no encontrada");
-                return false;
-            }
+			String inscripcionXML = "<inscripcion>" + "<id_inscripcion>" + ins.getIdInscripcion() + "</id_inscripcion>"
+					+ "<id_cliente>" + ins.getClientes().getIdCliente() + "</id_cliente>" + "<id_curso>"
+					+ ins.getCursos().getIdCurso() + "</id_curso>" + "<fecha_inscripcion>" + ins.getFechaInscripcion()
+					+ "</fecha_inscripcion>" + "</inscripcion>";
 
-            String inscripcionXML = "<inscripcion>" +
-                    "<id_inscripcion>" + ins.getIdInscripcion() + "</id_inscripcion>" +
-                    "<id_cliente>" + ins.getClientes().getIdCliente() + "</id_cliente>" +
-                    "<id_curso>" + ins.getCursos().getIdCurso() + "</id_curso>" +
-                    "<fecha_inscripcion>" + ins.getFechaInscripcion() + "</fecha_inscripcion>" +
-                    "</inscripcion>";
+			XQueryService service = (XQueryService) col.getService("XQueryService", "1.0");
+			String xquery = "update replace doc('/db/ITtech/inscripciones.xml')//inscripcion[id_inscripcion="
+					+ ins.getIdInscripcion() + "] with " + inscripcionXML;
+			service.query(xquery);
 
-            XQueryService service = (XQueryService) col.getService("XQueryService", "1.0");
-            String xquery = "update replace doc('/db/ITtech/inscripciones.xml')//inscripcion[id_inscripcion=" + ins.getIdInscripcion() + "] with " + inscripcionXML;
-            service.query(xquery);
+			return true;
 
-            
-            return true;
+		} catch (XMLDBException e) {
+			System.err.println("Error al actualizar inscripcion: " + e.getMessage());
+			return false;
+		}
+	}
 
-        } catch (XMLDBException e) {
-            System.err.println("Error al actualizar inscripcion: " + e.getMessage());
-            return false;
-        }
-    }
+	/*
+	 * Metodo para borrar inscripciones con un id como parametro
+	 * verificamos que la inscripcion exista y lo eliminamos con XQuery usando update delete
+	 */
+	@Override
+	public Boolean Borrar(int id) {
+		try {
+			Inscripcion ins = getOne(id);
+			if (ins == null) {
+				System.err.println("Inscripcion no encontrada");
+				return false;
+			}
 
-    @Override
-    public Boolean Borrar(int id) {
-        try {
-            Inscripcion ins = getOne(id);
-            if (ins == null) {
-                System.err.println("Inscripcion no encontrada");
-                return false;
-            }
+			System.out.println("Voy a borrar:\n" + ins.toString());
 
-            System.out.println("Voy a borrar:\n" + ins.toString());
+			XQueryService service = (XQueryService) col.getService("XQueryService", "1.0");
+			String xquery = "update delete doc('/db/ITtech/inscripciones.xml')//inscripcion[id_inscripcion=" + id + "]";
+			service.query(xquery);
 
-            XQueryService service = (XQueryService) col.getService("XQueryService", "1.0");
-            String xquery = "update delete doc('/db/ITtech/inscripciones.xml')//inscripcion[id_inscripcion=" + id + "]";
-            service.query(xquery);
+			return true;
 
-            return true;
-
-        } catch (XMLDBException e) {
-            System.err.println("Error al borrar inscripcion: " + e.getMessage());
-            return false;
-        }
-    }
+		} catch (XMLDBException e) {
+			System.err.println("Error al borrar inscripcion: " + e.getMessage());
+			return false;
+		}
+	}
 }

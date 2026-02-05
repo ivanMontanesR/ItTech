@@ -14,9 +14,16 @@ import modelos.Inscripcion;
 import util.ConexionNeodatis;
 
 public class Inscripciones_Neodatis implements DAOInscripciones {
-
+	/*
+	 * Creamos el Util de neodatis para crear la instancia del ODB para usarlo en
+	 * todos los metodos
+	 */
 	private ODB baseDatos = ConexionNeodatis.getInstancia();
 
+	/*
+	 * Metodo para Conseguir todas Las Inscripciones Haciendo un array de objetos Inscripciones
+	 * y añadiendolos Posteriormente a una lista
+	 */
 	@Override
 	public List<Inscripcion> getAll() {
 
@@ -36,9 +43,13 @@ public class Inscripciones_Neodatis implements DAOInscripciones {
 		}
 		return inscripciones;
 	}
-
+	/*
+	 * Metodo De Creacion de Inscripcion el cual recibimos la Inscripcion como parametro y
+	 * Buscamos primero cual es el maximo Id Insertado para insertar el siguiente con
+	 * el maxID +1 y insertandolo con el Store
+	 */
 	@Override
-	public Boolean Create(Inscripcion ins) {
+	public Boolean Create(Inscripcion inscripcion) {
 	    try {
 	        IQuery consulta = new CriteriaQuery(Inscripcion.class);
 	        Objects<Inscripcion> resultado = baseDatos.getObjects(consulta);
@@ -51,9 +62,9 @@ public class Inscripciones_Neodatis implements DAOInscripciones {
 	            }
 	        }
 	        
-	        ins.setIdInscripcion(maxId + 1);
+	        inscripcion.setIdInscripcion(maxId + 1);
 	        
-	        baseDatos.store(ins);
+	        baseDatos.store(inscripcion);
 	        baseDatos.commit();
 	        return true;
 	    } catch (Exception e) {
@@ -65,10 +76,16 @@ public class Inscripciones_Neodatis implements DAOInscripciones {
 	        return false;
 	    }
 	}
+	
+	/*
+	 * Metodo para recuperar una Inscripcion con un id que nos de el usuario el cual
+	 * usaremos el criteryaquery Con el where equal para comprobar el id de la inscripcion
+	 * con el id que nos han dado
+	 */
 	@Override
 	public Inscripcion getOne(int id) {
 
-		Inscripcion inscripcionEncontrada = null;
+		Inscripcion inscripcion = null;
 
 		try {
 
@@ -76,7 +93,7 @@ public class Inscripciones_Neodatis implements DAOInscripciones {
 			Objects<Inscripcion> resultado = baseDatos.getObjects(consulta);
 
 			if (resultado.hasNext()) {
-				inscripcionEncontrada = resultado.next();
+				inscripcion = resultado.next();
 
 			}
 		} catch (Exception e) {
@@ -85,15 +102,19 @@ public class Inscripciones_Neodatis implements DAOInscripciones {
 
 		}
 
-		return inscripcionEncontrada;
+		return inscripcion;
 	}
 
+	/*
+	 * Metodo Para actualizar una Inscripcion previamente recuperado en el principal el
+	 * cual insertaremos con el store
+	 */
 	@Override
-	public Boolean Update(Inscripcion in) {
+	public Boolean Update(Inscripcion inscripcion) {
 
 		try {
 
-			baseDatos.store(in);
+			baseDatos.store(inscripcion);
 			baseDatos.commit();
 
 			return true;
@@ -108,15 +129,18 @@ public class Inscripciones_Neodatis implements DAOInscripciones {
 		}
 	}
 
+	/*
+	 * Metodo Para Borrar Inscripciones con un id como parametro, con el comando delete
+	 */
 	@Override
 	public Boolean Borrar(int id) {
 
 		try {
 
-			Inscripcion inscripcionABorrar = getOne(id);
+			Inscripcion inscripcion = getOne(id);
 
-			if (inscripcionABorrar != null) {
-				baseDatos.delete(inscripcionABorrar);
+			if (inscripcion != null) {
+				baseDatos.delete(inscripcion);
 				baseDatos.commit();
 
 				return true;

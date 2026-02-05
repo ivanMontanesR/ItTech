@@ -13,9 +13,16 @@ import modelos.Cliente;
 import util.ConexionNeodatis;
 
 public class Clientes_Neodatis implements DAOcliente {
-
+	/*
+	 * Creamos el Util de neodatis para crear la instancia del ODB para usarlo en
+	 * todos los metodos
+	 */
 	private ODB baseDatos = ConexionNeodatis.getInstancia();
 
+	/*
+	 * Metodo para Conseguir todos los Clientes Haciendo un array de objetos CLiente
+	 * y añadiendolos Posteriormente a una lista
+	 */
 	@Override
 	public List<Cliente> getAll() {
 		List<Cliente> clientes = new ArrayList<>();
@@ -31,22 +38,27 @@ public class Clientes_Neodatis implements DAOcliente {
 		return clientes;
 	}
 
+	/*
+	 * Metodo De Creacion de Cliente el cual recibimos el Cliente como parametro y
+	 * Buscamos primero cual es el maximo Id Insertado para insertar el siguiente con
+	 * el maxID +1 y insertandolo con el Store
+	 */
 	@Override
-	public Boolean Create(Cliente cl) {
+	public Boolean Create(Cliente cliente) {
 		try {
-			  IQuery consulta = new CriteriaQuery(Cliente.class);
-		        Objects<Cliente> resultado = baseDatos.getObjects(consulta);
-		        
-		        int maxId = 0;
-		        while (resultado.hasNext()) {
-		            Cliente c = resultado.next();
-		            if (c.getIdCliente() != null && c.getIdCliente() > maxId) {
-		                maxId = c.getIdCliente();
-		            }
-		        }
-		        
-		        cl.setIdCliente(maxId + 1);
-			baseDatos.store(cl);
+			IQuery consulta = new CriteriaQuery(Cliente.class);
+			Objects<Cliente> resultado = baseDatos.getObjects(consulta);
+
+			int maxId = 0;
+			while (resultado.hasNext()) {
+				Cliente c = resultado.next();
+				if (c.getIdCliente() != null && c.getIdCliente() > maxId) {
+					maxId = c.getIdCliente();
+				}
+			}
+
+			cliente.setIdCliente(maxId + 1);
+			baseDatos.store(cliente);
 			baseDatos.commit();
 			return true;
 		} catch (Exception e) {
@@ -59,26 +71,35 @@ public class Clientes_Neodatis implements DAOcliente {
 		}
 	}
 
+	/*
+	 * Metodo para recuperar un Cliente con un id que nos de el usuario el cual
+	 * usaremos el criteryaquery Con el where equal para comprobar el id del cliente
+	 * con el id que nos han dado
+	 */
 	@Override
 	public Cliente getOne(int id) {
-		Cliente clienteEncontrado = null;
+		Cliente cliente = null;
 		try {
 			IQuery consulta = new CriteriaQuery(Cliente.class, Where.equal("idCliente", id));
 			Objects<Cliente> resultado = baseDatos.getObjects(consulta);
 			if (resultado.hasNext()) {
-				clienteEncontrado = resultado.next();
+				cliente = resultado.next();
 			}
 		} catch (Exception e) {
 			System.err.println("Error al buscar cliente: " + e.getMessage());
 			e.printStackTrace();
 		}
-		return clienteEncontrado;
+		return cliente;
 	}
 
+	/*
+	 * Metodo Para actualizar un cliente previamente recuperado en el principal el
+	 * cual insertaremos con el store
+	 */
 	@Override
-	public Boolean Update(Cliente cl) {
+	public Boolean Update(Cliente cliente) {
 		try {
-			baseDatos.store(cl);
+			baseDatos.store(cliente);
 			baseDatos.commit();
 			return true;
 		} catch (Exception e) {
@@ -91,12 +112,15 @@ public class Clientes_Neodatis implements DAOcliente {
 		}
 	}
 
+	/*
+	 * Metodo Para Borrar Clientes con un id como parametro, con el comando delete
+	 */
 	@Override
 	public Boolean Borrar(int id) {
 		try {
-			Cliente clienteABorrar = getOne(id);
-			if (clienteABorrar != null) {
-				baseDatos.delete(clienteABorrar);
+			Cliente cliente = getOne(id);
+			if (cliente != null) {
+				baseDatos.delete(cliente);
 				baseDatos.commit();
 				return true;
 			} else {
