@@ -92,7 +92,10 @@ public class Clientes_Hibernate implements DAOcliente {
 		try {
 			tx = sesion.beginTransaction();
 			Cliente cliente = sesion.get(Cliente.class, id);
-
+			if (cliente == null) {
+				tx.rollback();
+				return false;
+			}
 			sesion.remove(cliente);
 			tx.commit();
 			return true;

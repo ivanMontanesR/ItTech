@@ -78,7 +78,7 @@ public class Cursos_Hibernate implements DAOCursos {
 			sesion.close();
 		}
 	}
-	
+
 	// Metodo para borrar Un Curso con el id que nos de el usuario con el remove
 	@Override
 	public Boolean Borrar(int id) {
@@ -86,13 +86,15 @@ public class Cursos_Hibernate implements DAOCursos {
 		Transaction tx = null;
 
 		try {
-
+			tx = sesion.beginTransaction();
 			Curso curso = sesion.get(Curso.class, id);
-
-			
+			if (curso == null) {
+				tx.rollback();
+				return false;
+			}
 
 			System.out.println("Voy a borrar:\n" + curso.toString());
-			tx = sesion.beginTransaction();
+
 			sesion.remove(curso);
 			tx.commit();
 			return true;
@@ -108,6 +110,7 @@ public class Cursos_Hibernate implements DAOCursos {
 			sesion.close();
 		}
 	}
+
 	/*
 	 * Metodo para Crear un curso nuevo pasandole el objeto como parametro y
 	 * insertandolo con el persist

@@ -12,7 +12,8 @@ public class InscripcionesControlador {
 	public InscripcionesControlador(int tipoBD) {
 		this.tipoBD = tipoBD;
 	}
-
+	// Controlador que gestiona Que implementador de inscripciones  se usara segun el tipo de la base
+	// de datos
 	public DAOInscripciones getInscripcionDAO() {
 		switch (tipoBD) {
 		case 1:

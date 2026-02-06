@@ -9,6 +9,9 @@ public class ClientesControlador {
 
 	private int tipoBD;
 
+	// Controlador que gestiona Que implementador de clientes  se usara segun el tipo de la base
+	// de datos
+
 	public ClientesControlador(int tipoBD) {
 		this.tipoBD = tipoBD;
 	}

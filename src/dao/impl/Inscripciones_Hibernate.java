@@ -94,15 +94,17 @@ public class Inscripciones_Hibernate implements DAOInscripciones {
 		Transaction tx = null;
 
 		try {
+			tx = sesion.beginTransaction();
 			Inscripcion inscripcion = sesion.get(Inscripcion.class, id);
 
 			if (inscripcion == null) {
 				System.err.println("Inscripción no encontrada");
+				tx.rollback();
 				return false;
 			}
 
 			System.out.println("Voy a borrar:\n" + inscripcion.toString());
-			tx = sesion.beginTransaction();
+			
 			sesion.remove(inscripcion);
 			tx.commit();
 			return true;
